@@ -1,5 +1,5 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
 
 test.describe('Search Patient', () => {
   test('should search and open patient dashboard', async ({ page }) => {

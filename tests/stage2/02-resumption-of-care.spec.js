@@ -1,6 +1,6 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -9,7 +9,7 @@ import {
   dismissDialogs,
   getDateOffset,
   formatDate,
-} from '../../src/helpers/utils';
+} = require('../../src/helpers/utils');
 
 test.describe('Resumption of Care', () => {
   test('should initiate and complete resumption of care', async ({ page, patientDashboardPage }) => {
@@ -21,7 +21,7 @@ test.describe('Resumption of Care', () => {
     expect(episodeId, 'Episode ID must be available from previous tests').toBeTruthy();
 
     // Navigate to patient dashboard
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // Verify we are on the patient dashboard
@@ -76,7 +76,7 @@ test.describe('Resumption of Care', () => {
 
     // Strategy 3: Check under "Recerts Transfers" sidebar nav
     if (!rocFound) {
-      await patientDashboardPage.goto(patientId!, episodeId!);
+      await patientDashboardPage.goto(patientId, episodeId);
       await page.waitForTimeout(2000);
 
       const recertsLink = page.locator([
@@ -111,7 +111,7 @@ test.describe('Resumption of Care', () => {
 
     // Strategy 4: Try the FAB / action button
     if (!rocFound) {
-      await patientDashboardPage.goto(patientId!, episodeId!);
+      await patientDashboardPage.goto(patientId, episodeId);
       await page.waitForTimeout(2000);
 
       await patientDashboardPage.clickAddButton();

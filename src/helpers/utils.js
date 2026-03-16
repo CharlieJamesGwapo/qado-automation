@@ -1,11 +1,9 @@
-import { Page, Locator } from '@playwright/test';
-
 /**
  * Wait for AngularJS to finish processing
  */
-export async function waitForAngular(page: Page): Promise<void> {
+async function waitForAngular(page) {
   await page.waitForFunction(() => {
-    const angular = (window as any).angular;
+    const angular = window.angular;
     if (!angular) return true;
     const injector = angular.element(document.body).injector();
     if (!injector) return true;
@@ -18,7 +16,7 @@ export async function waitForAngular(page: Page): Promise<void> {
  * Select an option from a dropdown.
  * Handles both native <select> and Chosen.js styled dropdowns.
  */
-export async function selectOption(page: Page, selector: string, optionIndex: number = 1): Promise<void> {
+async function selectOption(page, selector, optionIndex = 1) {
   const select = page.locator(selector);
 
   // Check if native select is visible
@@ -61,7 +59,7 @@ export async function selectOption(page: Page, selector: string, optionIndex: nu
 
   // Fallback: set value via jQuery + AngularJS
   await page.evaluate(({ sel, idx }) => {
-    const selectEl = document.querySelector(sel) as HTMLSelectElement;
+    const selectEl = document.querySelector(sel);
     if (!selectEl) return;
 
     const options = Array.from(selectEl.options).filter(
@@ -71,14 +69,14 @@ export async function selectOption(page: Page, selector: string, optionIndex: nu
 
     const optIndex = Math.min(idx, options.length - 1);
 
-    if ((window as any).jQuery) {
-      (window as any).jQuery(selectEl).val(options[optIndex].value).trigger('chosen:updated').trigger('change');
+    if (window.jQuery) {
+      window.jQuery(selectEl).val(options[optIndex].value).trigger('chosen:updated').trigger('change');
     } else {
       selectEl.value = options[optIndex].value;
       selectEl.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    const angular = (window as any).angular;
+    const angular = window.angular;
     if (angular) {
       const ngModel = angular.element(selectEl).controller('ngModel');
       if (ngModel) {
@@ -95,7 +93,7 @@ export async function selectOption(page: Page, selector: string, optionIndex: nu
 /**
  * Select option by visible text — handles Chosen.js
  */
-export async function selectByText(page: Page, selector: string, text: string): Promise<void> {
+async function selectByText(page, selector, text) {
   const select = page.locator(selector);
   const isVisible = await select.isVisible({ timeout: 3000 }).catch(() => false);
 
@@ -103,14 +101,14 @@ export async function selectByText(page: Page, selector: string, text: string): 
     await select.selectOption({ label: text });
   } else {
     await page.evaluate(({ sel, txt }) => {
-      const selectEl = document.querySelector(sel) as HTMLSelectElement;
+      const selectEl = document.querySelector(sel);
       if (!selectEl) return;
       const option = Array.from(selectEl.options).find(o => o.text.trim().includes(txt));
       if (option) {
-        if ((window as any).jQuery) {
-          (window as any).jQuery(selectEl).val(option.value).trigger('chosen:updated').trigger('change');
+        if (window.jQuery) {
+          window.jQuery(selectEl).val(option.value).trigger('chosen:updated').trigger('change');
         }
-        const angular = (window as any).angular;
+        const angular = window.angular;
         if (angular) {
           try { angular.element(selectEl).scope().$apply(); } catch (e) {}
         }
@@ -123,7 +121,7 @@ export async function selectByText(page: Page, selector: string, text: string): 
 /**
  * Fill a date input (mm/dd/yyyy format used by the app's datepicker)
  */
-export async function fillDate(page: Page, selector: string, date: string): Promise<void> {
+async function fillDate(page, selector, date) {
   const input = page.locator(selector);
   const isVisible = await input.isVisible({ timeout: 5000 }).catch(() => false);
   if (!isVisible) return;
@@ -137,16 +135,16 @@ export async function fillDate(page: Page, selector: string, date: string): Prom
   } catch {
     // Fallback
     await page.evaluate(({ sel, val }) => {
-      const el = document.querySelector(sel) as HTMLInputElement;
+      const el = document.querySelector(sel);
       if (el) { el.value = val; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }
     }, { sel: selector, val: date });
   }
 
   // Ensure AngularJS picks up the value
   await page.evaluate(({ sel, val }) => {
-    const el = document.querySelector(sel) as HTMLInputElement;
+    const el = document.querySelector(sel);
     if (!el) return;
-    const angular = (window as any).angular;
+    const angular = window.angular;
     if (angular) {
       const ngModel = angular.element(el).controller('ngModel');
       if (ngModel) { ngModel.$setViewValue(val); ngModel.$render(); }
@@ -159,20 +157,20 @@ export async function fillDate(page: Page, selector: string, date: string): Prom
 /**
  * Click a radio button by its name attribute and value
  */
-export async function selectRadio(page: Page, name: string, value: string): Promise<void> {
+async function selectRadio(page, name, value) {
   // Use label-based selection since radio names can be dynamic
   const clicked = await page.evaluate(({ n, v }) => {
     // Try direct selector first
-    let radio = document.querySelector(`input[type="radio"][name="${n}"][value="${v}"]`) as HTMLInputElement;
+    let radio = document.querySelector(`input[type="radio"][name="${n}"][value="${v}"]`);
     if (radio) { radio.click(); return true; }
     // Try by value only
-    radio = document.querySelector(`input[type="radio"][value="${v}"]`) as HTMLInputElement;
+    radio = document.querySelector(`input[type="radio"][value="${v}"]`);
     if (radio) { radio.click(); return true; }
     // Try by label text
     const labels = document.querySelectorAll('label');
     for (const label of labels) {
       if (label.textContent?.trim() === v) {
-        const r = label.querySelector('input[type="radio"]') as HTMLInputElement;
+        const r = label.querySelector('input[type="radio"]');
         if (r) { r.click(); return true; }
       }
     }
@@ -183,9 +181,9 @@ export async function selectRadio(page: Page, name: string, value: string): Prom
 /**
  * Click the first radio button for a given name attribute
  */
-export async function selectFirstRadio(page: Page, name: string): Promise<void> {
+async function selectFirstRadio(page, name) {
   await page.evaluate((n) => {
-    const radio = document.querySelector(`input[type="radio"][name="${n}"]`) as HTMLInputElement;
+    const radio = document.querySelector(`input[type="radio"][name="${n}"]`);
     if (radio) radio.click();
   }, name);
 }
@@ -193,7 +191,7 @@ export async function selectFirstRadio(page: Page, name: string): Promise<void> 
 /**
  * Safe fill - fills via force or JS
  */
-export async function safeFill(page: Page, selector: string, value: string): Promise<void> {
+async function safeFill(page, selector, value) {
   const el = page.locator(selector);
   if (await el.isVisible({ timeout: 3000 }).catch(() => false)) {
     try {
@@ -201,14 +199,14 @@ export async function safeFill(page: Page, selector: string, value: string): Pro
       await el.fill(value);
     } catch {
       await page.evaluate(({ sel, val }) => {
-        const input = document.querySelector(sel) as HTMLInputElement;
+        const input = document.querySelector(sel);
         if (input) { input.value = val; input.dispatchEvent(new Event('input', { bubbles: true })); }
       }, { sel: selector, val: value });
     }
   } else {
     // Try JS fallback for hidden elements
     await page.evaluate(({ sel, val }) => {
-      const input = document.querySelector(sel) as HTMLInputElement;
+      const input = document.querySelector(sel);
       if (input) { input.value = val; input.dispatchEvent(new Event('input', { bubbles: true })); }
     }, { sel: selector, val: value });
   }
@@ -217,7 +215,7 @@ export async function safeFill(page: Page, selector: string, value: string): Pro
 /**
  * Safe click
  */
-export async function safeClick(page: Page, selector: string): Promise<void> {
+async function safeClick(page, selector) {
   const el = page.locator(selector);
   if (await el.isVisible({ timeout: 3000 }).catch(() => false)) {
     await el.click();
@@ -227,7 +225,7 @@ export async function safeClick(page: Page, selector: string): Promise<void> {
 /**
  * Wait for page to stabilize after navigation
  */
-export async function waitForPageLoad(page: Page): Promise<void> {
+async function waitForPageLoad(page) {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.waitForTimeout(2000);
 }
@@ -235,7 +233,7 @@ export async function waitForPageLoad(page: Page): Promise<void> {
 /**
  * Dismiss any alert/modal dialogs
  */
-export async function dismissDialogs(page: Page): Promise<void> {
+async function dismissDialogs(page) {
   const okButton = page.locator('.swal2-confirm, button:has-text("OK"), button:has-text("Yes")').first();
   if (await okButton.isVisible({ timeout: 2000 }).catch(() => false)) {
     await okButton.click();
@@ -246,7 +244,7 @@ export async function dismissDialogs(page: Page): Promise<void> {
 /**
  * Force-remove all Bootstrap modals from the DOM
  */
-export async function forceCloseModals(page: Page): Promise<void> {
+async function forceCloseModals(page) {
   await page.evaluate(() => {
     document.querySelectorAll('.modal').forEach(m => m.remove());
     document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
@@ -260,7 +258,7 @@ export async function forceCloseModals(page: Page): Promise<void> {
 /**
  * Remove required validation from eligibility check fields
  */
-export async function clearEligibilityValidation(page: Page): Promise<void> {
+async function clearEligibilityValidation(page) {
   await page.evaluate(() => {
     const selectors = [
       'input[name="medcareid"]', 'input[name="lastname"]', '#dob',
@@ -278,19 +276,37 @@ export async function clearEligibilityValidation(page: Page): Promise<void> {
   });
 }
 
-export function formatDate(date: Date): string {
+function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${month}/${day}/${date.getFullYear()}`;
 }
 
-export function getDateOffset(daysFromNow: number): string {
+function getDateOffset(daysFromNow) {
   const date = new Date();
   date.setDate(date.getDate() + daysFromNow);
   return formatDate(date);
 }
 
-export function formatPhone(phone: string): string {
+function formatPhone(phone) {
   const digits = phone.replace(/\D/g, '').substring(0, 10);
   return `(${digits.substring(0, 3)}) ${digits.substring(3, 6)}-${digits.substring(6, 10)}`;
 }
+
+module.exports = {
+  waitForAngular,
+  selectOption,
+  selectByText,
+  fillDate,
+  selectRadio,
+  selectFirstRadio,
+  safeFill,
+  safeClick,
+  waitForPageLoad,
+  dismissDialogs,
+  forceCloseModals,
+  clearEligibilityValidation,
+  formatDate,
+  getDateOffset,
+  formatPhone,
+};

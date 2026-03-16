@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
-import { generateVisitData } from '../../src/data/test-data';
-import { waitForPageLoad, safeFill, safeClick, fillDate, selectOption, dismissDialogs } from '../../src/helpers/utils';
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
+const { generateVisitData } = require('../../src/data/test-data');
+const { waitForPageLoad, safeFill, safeClick, fillDate, selectOption, dismissDialogs } = require('../../src/helpers/utils');
 
 test.describe('Schedule Visit', () => {
   test('should schedule an RN visit task on the patient dashboard', async ({ page, patientDashboardPage }) => {
@@ -15,7 +15,7 @@ test.describe('Schedule Visit', () => {
     const visitData = generateVisitData();
 
     // Navigate to the patient dashboard
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // Verify we are on the patient dashboard

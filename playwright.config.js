@@ -1,9 +1,9 @@
-import { defineConfig } from '@playwright/test';
-import dotenv from 'dotenv';
+const { defineConfig } = require('@playwright/test');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
-export default defineConfig({
+module.exports = defineConfig({
   testDir: './tests',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -27,7 +27,7 @@ export default defineConfig({
     {
       name: 'auth-setup',
       testDir: './src/fixtures',
-      testMatch: /auth\.setup\.ts/,
+      testMatch: /auth\.setup\.js/,
       use: { storageState: undefined },
     },
     {

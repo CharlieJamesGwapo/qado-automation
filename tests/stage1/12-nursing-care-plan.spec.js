@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState } from '../../src/data/state';
-import { generateNursingCarePlan } from '../../src/data/test-data';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState } = require('../../src/data/state');
+const { generateNursingCarePlan } = require('../../src/data/test-data');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -9,7 +9,7 @@ import {
   selectFirstRadio,
   safeClick,
   dismissDialogs,
-} from '../../src/helpers/utils';
+} = require('../../src/helpers/utils');
 
 test.describe('Nursing Care Plan', () => {
   test('should create a new nursing care plan and save', async ({ page }) => {

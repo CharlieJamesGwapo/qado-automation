@@ -1,19 +1,19 @@
-import { Page } from '@playwright/test';
+class LoginPage {
+  constructor(page) {
+    this.page = page;
 
-export class LoginPage {
-  constructor(private page: Page) {}
+    // Locators
+    this.emailInput = this.page.locator('#loginemail');
+    this.passwordInput = this.page.locator('#loginpassword');
+    this.loginButton = this.page.locator('button[type="submit"]');
+  }
 
-  // Locators
-  private emailInput = this.page.locator('#loginemail');
-  private passwordInput = this.page.locator('#loginpassword');
-  private loginButton = this.page.locator('button[type="submit"]');
-
-  async goto(): Promise<void> {
+  async goto() {
     await this.page.goto('/login', { waitUntil: 'domcontentloaded', timeout: 20000 });
     await this.page.waitForTimeout(2000);
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async login(email, password) {
     await this.goto();
 
     // If already logged in (redirected to dashboard), skip login
@@ -35,7 +35,9 @@ export class LoginPage {
     await this.page.waitForTimeout(3000);
   }
 
-  async isLoggedIn(): Promise<boolean> {
+  async isLoggedIn() {
     return this.page.url().includes('/dashboard');
   }
 }
+
+module.exports = { LoginPage };

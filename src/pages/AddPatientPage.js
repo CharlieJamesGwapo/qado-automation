@@ -1,15 +1,16 @@
-import { Page, expect } from '@playwright/test';
-import { waitForPageLoad, selectOption, fillDate, selectRadio, safeFill, dismissDialogs, forceCloseModals, clearEligibilityValidation } from '../helpers/utils';
+const { waitForPageLoad, selectOption, fillDate, selectRadio, safeFill, dismissDialogs, forceCloseModals, clearEligibilityValidation } = require('../helpers/utils');
 
-export class AddPatientPage {
-  constructor(private page: Page) {}
+class AddPatientPage {
+  constructor(page) {
+    this.page = page;
+  }
 
-  async goto(): Promise<void> {
+  async goto() {
     await this.page.goto('/patient', { waitUntil: 'domcontentloaded' });
     await this.page.waitForTimeout(3000);
   }
 
-  async skipEligibilityCheck(): Promise<void> {
+  async skipEligibilityCheck() {
     const page = this.page;
     await page.waitForTimeout(2000);
 
@@ -40,7 +41,7 @@ export class AddPatientPage {
     }
   }
 
-  async fillPreAdmissionForm(data: any): Promise<void> {
+  async fillPreAdmissionForm(data) {
     const page = this.page;
 
     // --- Referral / Admission Dates ---
@@ -90,7 +91,7 @@ export class AddPatientPage {
     await safeFill(page, '#main_city', data.mainCity);
     // State + Zipcode — set via AngularJS model directly to ensure proper validation
     await page.evaluate(() => {
-      const angular = (window as any).angular;
+      const angular = window.angular;
       if (!angular) return;
       const el = document.querySelector('#main_state');
       if (!el) return;
@@ -100,13 +101,13 @@ export class AddPatientPage {
         scope.field.info.addresses.main.zipcode = '90001';
         try { scope.$apply(); } catch(e) {}
         // Also update the select element + Chosen
-        const sel = document.querySelector('#main_state') as HTMLSelectElement;
+        const sel = document.querySelector('#main_state');
         if (sel) {
           const caOpt = Array.from(sel.options).find(o => o.value === 'CA' || o.text.includes('California'));
           if (caOpt) sel.value = caOpt.value;
-          if ((window as any).jQuery) { (window as any).jQuery(sel).trigger('chosen:updated').trigger('change'); }
+          if (window.jQuery) { window.jQuery(sel).trigger('chosen:updated').trigger('change'); }
         }
-        const zipEl = document.querySelector('#main_zipcode') as HTMLInputElement;
+        const zipEl = document.querySelector('#main_zipcode');
         if (zipEl) { zipEl.value = '90001'; zipEl.dispatchEvent(new Event('input', { bubbles: true })); }
         // Trigger validation
         if (scope.form?.zipcode?.validateZipcode) {
@@ -139,7 +140,7 @@ export class AddPatientPage {
     await safeFill(page, '#service_city', mainCity || data.mainCity);
     // Service state + zip via AngularJS model
     await page.evaluate(() => {
-      const angular = (window as any).angular;
+      const angular = window.angular;
       if (!angular) return;
       const el = document.querySelector('#service_state');
       if (!el) return;
@@ -149,11 +150,11 @@ export class AddPatientPage {
         scope.field.info.addresses.service.zipcode = '90001';
       }
       // Update select
-      const sSt = el as HTMLSelectElement;
+      const sSt = el;
       const caOpt = Array.from(sSt.options).find(o => o.value === 'CA' || o.text.includes('California'));
       if (caOpt) sSt.value = caOpt.value;
-      if ((window as any).jQuery) { (window as any).jQuery(sSt).trigger('chosen:updated').trigger('change'); }
-      const sZip = document.querySelector('#service_zipcode') as HTMLInputElement;
+      if (window.jQuery) { window.jQuery(sSt).trigger('chosen:updated').trigger('change'); }
+      const sZip = document.querySelector('#service_zipcode');
       if (sZip) { sZip.value = '90001'; sZip.dispatchEvent(new Event('input', { bubbles: true })); }
       if (scope?.form?.zipcode?.validateZipcode) {
         scope.form.zipcode.validateZipcode('90001', 'CA', 'service_zipcode');
@@ -216,7 +217,7 @@ export class AddPatientPage {
     await page.waitForTimeout(1000);
   }
 
-  async save(): Promise<void> {
+  async save() {
     const page = this.page;
 
     // Log invalid fields for debugging
@@ -232,7 +233,7 @@ export class AddPatientPage {
 
     // Force ALL form controls to valid state and set form as submitted
     await page.evaluate(() => {
-      const angular = (window as any).angular;
+      const angular = window.angular;
       if (!angular) return;
 
       // Clear all ng-invalid CSS classes
@@ -259,7 +260,7 @@ export class AddPatientPage {
 
     // Debug: check AngularJS form errors
     const formErrors = await page.evaluate(() => {
-      const angular = (window as any).angular;
+      const angular = window.angular;
       if (!angular) return { error: 'no angular' };
       const formEl = document.querySelector('ng-form') || document.querySelector('[name="hcareForm"]') || document.querySelector('form');
       if (!formEl) return { error: 'no form element' };
@@ -277,7 +278,7 @@ export class AddPatientPage {
         $error: Object.keys(form.$error || {}),
         $errorDetails: Object.entries(form.$error || {}).map(([key, ctrls]) => ({
           type: key,
-          fields: Array.isArray(ctrls) ? (ctrls as any[]).map(c => c.$name || 'unnamed').slice(0, 5) : 'not array'
+          fields: Array.isArray(ctrls) ? ctrls.map(c => c.$name || 'unnamed').slice(0, 5) : 'not array'
         })),
       };
     });
@@ -303,7 +304,7 @@ export class AddPatientPage {
     console.log('Buttons with ng-click*=save:', count);
 
     // Capture console errors
-    const consoleErrors: string[] = [];
+    const consoleErrors = [];
     page.on('console', msg => {
       if (msg.type() === 'error') consoleErrors.push(msg.text());
     });
@@ -312,7 +313,7 @@ export class AddPatientPage {
     // Call save: action is $scope.form.submit()
     // Also find the form scope and set $submitted on it
     const saveResult = await page.evaluate(() => {
-      const angular = (window as any).angular;
+      const angular = window.angular;
       if (!angular) return 'no angular';
 
       // Find hcareForm on the correct scope
@@ -342,7 +343,7 @@ export class AddPatientPage {
           return 'save.action() called';
         }
         return 'no submit method found';
-      } catch(e: any) {
+      } catch(e) {
         return 'error: ' + e.message;
       }
     });
@@ -373,7 +374,7 @@ export class AddPatientPage {
     await dismissDialogs(page);
   }
 
-  async getPatientInfoFromUrl(): Promise<{ patientId: string; episodeId: string }> {
+  async getPatientInfoFromUrl() {
     const url = this.page.url();
     const match = url.match(/patientcare\/([^/]+)\/([^/]+)/);
     if (match) {
@@ -382,3 +383,5 @@ export class AddPatientPage {
     return { patientId: '', episodeId: '' };
   }
 }
+
+module.exports = { AddPatientPage };
