@@ -28,7 +28,7 @@ export function generatePatientData() {
     mainStreet: '',
     mainCity: faker.location.city(),
     mainState: 'CA- California',
-    mainZipcode: '90210',
+    mainZipcode: '90001',
     phone: formatPhone(faker.phone.number({ style: 'national' })),
     otherPhone: formatPhone(faker.phone.number({ style: 'national' })),
     email: faker.internet.email({ firstName, lastName }),

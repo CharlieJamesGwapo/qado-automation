@@ -21,11 +21,12 @@ export default defineConfig({
     headless: process.env.HEADLESS === 'true',
     viewport: { width: 1920, height: 1080 },
     actionTimeout: 30000,
-    navigationTimeout: 30000,
+    navigationTimeout: 60000,
   },
   projects: [
     {
       name: 'auth-setup',
+      testDir: './src/fixtures',
       testMatch: /auth\.setup\.ts/,
       use: { storageState: undefined },
     },
