@@ -1,6 +1,6 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -12,8 +12,8 @@ import {
   getDateOffset,
   safeClick,
   waitForAngular,
-} from '../../src/helpers/utils';
-import { faker } from '@faker-js/faker';
+} = require('../../src/helpers/utils');
+const { faker } = require('@faker-js/faker');
 
 // ── Section definitions ────────────────────────────────────────────────────
 const OASIS_SECTIONS = [
@@ -27,10 +27,10 @@ const OASIS_SECTIONS = [
   'Musculoskeletal',
   'Medications',
   'Care Management',
-] as const;
+];
 
 // Alternate label patterns the app may use for each section
-const SECTION_ALIASES: Record<string, string[]> = {
+const SECTION_ALIASES = {
   'Administrative': ['Administrative', 'Admin', 'M0010', 'Patient Information', 'Clinical Record'],
   'Diagnosis': ['Diagnosis', 'Diagnoses', 'Health Conditions', 'Diagnosis/Health', 'M1000', 'ICD'],
   'Vital Signs': ['Vital Signs', 'Vital', 'Sensory', 'Vital Signs/Sensory', 'Vitals', 'M1020'],
@@ -47,7 +47,7 @@ const SECTION_ALIASES: Record<string, string[]> = {
  * Fill all visible form fields in the current view with sensible defaults.
  * Handles inputs, selects, radios, checkboxes, and textareas.
  */
-async function fillAllVisibleFields(page: import('@playwright/test').Page, sectionName: string): Promise<void> {
+async function fillAllVisibleFields(page, sectionName) {
   const todayStr = formatDate(new Date());
   const now = new Date();
 
@@ -175,7 +175,7 @@ async function fillAllVisibleFields(page: import('@playwright/test').Page, secti
   // ── Radio buttons (select first option for each group) ────────────────
   const radios = page.locator('input[type="radio"]:visible');
   const radioCount = await radios.count();
-  const handledRadioGroups = new Set<string>();
+  const handledRadioGroups = new Set();
   for (let i = 0; i < radioCount; i++) {
     try {
       const radio = radios.nth(i);
@@ -246,7 +246,7 @@ async function fillAllVisibleFields(page: import('@playwright/test').Page, secti
  * Try to navigate to a specific OASIS section using tab/link/button clicks.
  * Returns true if navigation was successful.
  */
-async function navigateToSection(page: import('@playwright/test').Page, sectionName: string): Promise<boolean> {
+async function navigateToSection(page, sectionName) {
   const aliases = SECTION_ALIASES[sectionName] || [sectionName];
 
   for (const alias of aliases) {
@@ -282,7 +282,7 @@ async function navigateToSection(page: import('@playwright/test').Page, sectionN
  * Save the current section and move to the next.
  * Tries multiple common save/next button patterns.
  */
-async function saveAndNext(page: import('@playwright/test').Page): Promise<void> {
+async function saveAndNext(page) {
   // Look for "Save & Next", "Next", or "Save" buttons
   const nextSelectors = [
     'button:has-text("Save & Next")',
@@ -334,7 +334,7 @@ test.describe('Complete OASIS Start of Care Assessment', () => {
     expect(episodeId, 'episodeId must exist in state').toBeTruthy();
 
     // ── Navigate to patient dashboard ────────────────────────────────────
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // ── Navigate to OASIS SOC form ───────────────────────────────────────
@@ -400,7 +400,7 @@ test.describe('Complete OASIS Start of Care Assessment', () => {
 
     // If still not found, try the Chart tab or other navigation
     if (!oasisFound) {
-      await patientDashboardPage.goto(patientId!, episodeId!);
+      await patientDashboardPage.goto(patientId, episodeId);
       await page.waitForTimeout(2000);
 
       // Try Chart tab

@@ -1,18 +1,19 @@
-import { Page, expect } from '@playwright/test';
-import { waitForPageLoad } from '../helpers/utils';
+const { waitForPageLoad } = require('../helpers/utils');
 
-export class PatientManagerPage {
-  constructor(private page: Page) {}
+class PatientManagerPage {
+  constructor(page) {
+    this.page = page;
 
-  private searchInput = this.page.locator('input[placeholder="Search Patients"]');
-  private patientRows = this.page.locator('tbody tr');
+    this.searchInput = this.page.locator('input[placeholder="Search Patients"]');
+    this.patientRows = this.page.locator('tbody tr');
+  }
 
-  async goto(): Promise<void> {
+  async goto() {
     await this.page.goto('/patients/admitted');
     await waitForPageLoad(this.page);
   }
 
-  async searchPatient(name: string): Promise<void> {
+  async searchPatient(name) {
     await this.searchInput.waitFor({ state: 'visible', timeout: 10000 });
     await this.searchInput.clear();
     await this.searchInput.fill(name);
@@ -20,12 +21,12 @@ export class PatientManagerPage {
     await waitForPageLoad(this.page);
   }
 
-  async isPatientVisible(name: string): Promise<boolean> {
+  async isPatientVisible(name) {
     const row = this.page.locator(`tbody tr:has-text("${name}")`);
     return await row.isVisible({ timeout: 5000 }).catch(() => false);
   }
 
-  async openPatient(name: string): Promise<void> {
+  async openPatient(name) {
     const row = this.page.locator(`tbody tr:has-text("${name}")`).first();
     await row.waitFor({ state: 'visible', timeout: 10000 });
     const link = row.locator('a').first();
@@ -33,14 +34,14 @@ export class PatientManagerPage {
     await waitForPageLoad(this.page);
   }
 
-  async openFirstPatient(): Promise<void> {
+  async openFirstPatient() {
     const firstLink = this.patientRows.nth(1).locator('a').first();
     await firstLink.waitFor({ state: 'visible', timeout: 10000 });
     await firstLink.click();
     await waitForPageLoad(this.page);
   }
 
-  async getPatientInfoFromUrl(): Promise<{ patientId: string; episodeId: string }> {
+  async getPatientInfoFromUrl() {
     const url = this.page.url();
     const match = url.match(/patientcare\/([^/]+)\/([^/]+)/);
     if (match) {
@@ -49,3 +50,5 @@ export class PatientManagerPage {
     return { patientId: '', episodeId: '' };
   }
 }
+
+module.exports = { PatientManagerPage };

@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState } from '../../src/data/state';
-import { generateAdverseEvent } from '../../src/data/test-data';
-import { safeFill, selectOption, fillDate, waitForAngular, waitForPageLoad, dismissDialogs, safeClick, formatDate, getDateOffset } from '../../src/helpers/utils';
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState } = require('../../src/data/state');
+const { generateAdverseEvent } = require('../../src/data/test-data');
+const { safeFill, selectOption, fillDate, waitForAngular, waitForPageLoad, dismissDialogs, safeClick, formatDate, getDateOffset } = require('../../src/helpers/utils');
 
 test.describe('Adverse Events', () => {
   test('should create a new patient incident report', async ({ page }) => {

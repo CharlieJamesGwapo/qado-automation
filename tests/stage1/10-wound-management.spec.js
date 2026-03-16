@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState } from '../../src/data/state';
-import { generateWoundData } from '../../src/data/test-data';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState } = require('../../src/data/state');
+const { generateWoundData } = require('../../src/data/test-data');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -9,8 +9,8 @@ import {
   selectFirstRadio,
   safeClick,
   dismissDialogs,
-} from '../../src/helpers/utils';
-import { formatDate } from '../../src/helpers/utils';
+  formatDate,
+} = require('../../src/helpers/utils');
 
 test.describe('Wound Management', () => {
   test('should add a wound assessment and save', async ({ page, patientDashboardPage }) => {
@@ -23,7 +23,7 @@ test.describe('Wound Management', () => {
     const woundData = generateWoundData();
 
     // Navigate to the patient dashboard first
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // Try to find Wound Management - it may be under Chart tab or a direct tab

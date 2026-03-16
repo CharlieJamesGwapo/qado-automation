@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
-import { generateVisitData } from '../../src/data/test-data';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
+const { generateVisitData } = require('../../src/data/test-data');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -13,8 +13,8 @@ import {
   getDateOffset,
   safeClick,
   waitForAngular,
-} from '../../src/helpers/utils';
-import { faker } from '@faker-js/faker';
+} = require('../../src/helpers/utils');
+const { faker } = require('@faker-js/faker');
 
 test.describe('Complete Visit Task', () => {
   test('should open a scheduled visit task, fill the form, and complete it', async ({ page, patientDashboardPage }) => {
@@ -26,7 +26,7 @@ test.describe('Complete Visit Task', () => {
     expect(episodeId, 'episodeId must exist in state').toBeTruthy();
 
     // ── Navigate to patient dashboard ────────────────────────────────────
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // ── Go to the Tasks tab ──────────────────────────────────────────────
@@ -299,7 +299,7 @@ test.describe('Complete Visit Task', () => {
     // Find all unique radio group names and select the first option for each
     const allRadios = page.locator('input[type="radio"]:visible');
     const radioCount = await allRadios.count();
-    const handledGroups = new Set<string>();
+    const handledGroups = new Set();
     for (let i = 0; i < radioCount; i++) {
       try {
         const name = await allRadios.nth(i).getAttribute('name');

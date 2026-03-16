@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState } from '../../src/data/state';
-import { generateCommunicationNote } from '../../src/data/test-data';
-import { safeFill, selectOption, fillDate, waitForAngular, waitForPageLoad, dismissDialogs, safeClick } from '../../src/helpers/utils';
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState } = require('../../src/data/state');
+const { generateCommunicationNote } = require('../../src/data/test-data');
+const { safeFill, selectOption, fillDate, waitForAngular, waitForPageLoad, dismissDialogs, safeClick } = require('../../src/helpers/utils');
 
 test.describe('Communication Note', () => {
   test('should create a new communication note', async ({ page }) => {

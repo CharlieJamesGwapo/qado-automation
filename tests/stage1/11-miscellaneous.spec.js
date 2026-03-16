@@ -1,7 +1,7 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState } from '../../src/data/state';
-import { generateMiscellaneous } from '../../src/data/test-data';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState } = require('../../src/data/state');
+const { generateMiscellaneous } = require('../../src/data/test-data');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -9,8 +9,8 @@ import {
   selectFirstRadio,
   safeClick,
   dismissDialogs,
-} from '../../src/helpers/utils';
-import { formatDate } from '../../src/helpers/utils';
+  formatDate,
+} = require('../../src/helpers/utils');
 
 test.describe('Miscellaneous', () => {
   test('should create a new miscellaneous entry and save', async ({ page }) => {

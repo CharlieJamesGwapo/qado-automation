@@ -1,6 +1,6 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { loadState, saveState } from '../../src/data/state';
-import {
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { loadState, saveState } = require('../../src/data/state');
+const {
   waitForPageLoad,
   selectOption,
   fillDate,
@@ -8,7 +8,7 @@ import {
   safeClick,
   dismissDialogs,
   getDateOffset,
-} from '../../src/helpers/utils';
+} = require('../../src/helpers/utils');
 
 test.describe('Transfer Patient', () => {
   test('should initiate and complete patient transfer', async ({ page, patientDashboardPage }) => {
@@ -20,7 +20,7 @@ test.describe('Transfer Patient', () => {
     expect(episodeId, 'Episode ID must be available from previous tests').toBeTruthy();
 
     // Navigate to patient dashboard
-    await patientDashboardPage.goto(patientId!, episodeId!);
+    await patientDashboardPage.goto(patientId, episodeId);
     await page.waitForTimeout(2000);
 
     // Verify we are on the patient dashboard
@@ -100,7 +100,7 @@ test.describe('Transfer Patient', () => {
 
     // Strategy 4: Check the FAB / action button menu
     if (!transferFound) {
-      await patientDashboardPage.goto(patientId!, episodeId!);
+      await patientDashboardPage.goto(patientId, episodeId);
       await page.waitForTimeout(2000);
 
       await patientDashboardPage.clickAddButton();

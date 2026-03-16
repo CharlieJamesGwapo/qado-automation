@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker';
-import { formatDate, formatPhone, getDateOffset } from '../helpers/utils';
+const { faker } = require('@faker-js/faker');
+const { formatDate, formatPhone, getDateOffset } = require('../helpers/utils');
 
-export function generatePatientData() {
+function generatePatientData() {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   const birthDate = faker.date.birthdate({ min: 50, max: 90, mode: 'age' });
@@ -73,7 +73,7 @@ export function generatePatientData() {
   };
 }
 
-export function generateVisitData() {
+function generateVisitData() {
   return {
     visitDate: getDateOffset(1),
     visitTime: '10:00',
@@ -81,7 +81,7 @@ export function generateVisitData() {
   };
 }
 
-export function generateCommunicationNote() {
+function generateCommunicationNote() {
   return {
     subject: faker.lorem.words(3),
     message: faker.lorem.paragraph(),
@@ -89,7 +89,7 @@ export function generateCommunicationNote() {
   };
 }
 
-export function generateMDOrder() {
+function generateMDOrder() {
   return {
     orderDetails: faker.lorem.sentence(),
     orderDate: formatDate(new Date()),
@@ -98,7 +98,7 @@ export function generateMDOrder() {
   };
 }
 
-export function generateAdverseEvent() {
+function generateAdverseEvent() {
   return {
     incidentDate: formatDate(new Date()),
     description: faker.lorem.paragraph(),
@@ -106,7 +106,7 @@ export function generateAdverseEvent() {
   };
 }
 
-export function generateMedicationData() {
+function generateMedicationData() {
   return {
     medicationName: faker.helpers.arrayElement(['Lisinopril', 'Metformin', 'Amlodipine', 'Atorvastatin', 'Omeprazole']),
     dosage: faker.helpers.arrayElement(['5mg', '10mg', '20mg', '50mg', '100mg']),
@@ -116,7 +116,7 @@ export function generateMedicationData() {
   };
 }
 
-export function generateWoundData() {
+function generateWoundData() {
   return {
     woundType: faker.helpers.arrayElement(['Pressure Ulcer', 'Surgical Wound', 'Venous Ulcer', 'Diabetic Ulcer']),
     location: faker.helpers.arrayElement(['Left heel', 'Right heel', 'Sacrum', 'Left leg', 'Right leg']),
@@ -126,7 +126,7 @@ export function generateWoundData() {
   };
 }
 
-export function generateNursingCarePlan() {
+function generateNursingCarePlan() {
   return {
     problem: faker.helpers.arrayElement(['Pain Management', 'Wound Care', 'Medication Compliance', 'Fall Prevention', 'Nutrition']),
     goal: faker.lorem.sentence(),
@@ -135,10 +135,22 @@ export function generateNursingCarePlan() {
   };
 }
 
-export function generateMiscellaneous() {
+function generateMiscellaneous() {
   return {
     title: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
     date: formatDate(new Date()),
   };
 }
+
+module.exports = {
+  generatePatientData,
+  generateVisitData,
+  generateCommunicationNote,
+  generateMDOrder,
+  generateAdverseEvent,
+  generateMedicationData,
+  generateWoundData,
+  generateNursingCarePlan,
+  generateMiscellaneous,
+};

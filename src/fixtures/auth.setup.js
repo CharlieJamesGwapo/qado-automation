@@ -1,6 +1,6 @@
-import { test as setup } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import dotenv from 'dotenv';
+const { test: setup } = require('@playwright/test');
+const { LoginPage } = require('../pages/LoginPage');
+const dotenv = require('dotenv');
 
 dotenv.config();
 

@@ -1,6 +1,6 @@
-import { test, expect } from '../../src/fixtures/test-fixtures';
-import { generatePatientData } from '../../src/data/test-data';
-import { saveState } from '../../src/data/state';
+const { test, expect } = require('../../src/fixtures/test-fixtures');
+const { generatePatientData } = require('../../src/data/test-data');
+const { saveState } = require('../../src/data/state');
 
 test.describe('Add Patient', () => {
   test('should complete pre-admission form and save patient', async ({ page, addPatientPage }) => {
