@@ -1,0 +1,9 @@
+node_modules/
+.env
+test-results/
+playwright-report/
+screenshots/
+auth/
+*.session.json
+.state/
+inspect-*.ts

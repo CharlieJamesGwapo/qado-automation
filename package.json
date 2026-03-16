@@ -1,0 +1,39 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "description": "End-to-end automation tests for QADO Medisource using Playwright + TypeScript",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "test:stage1": "npx playwright test --project=stage1",
+    "test:stage2": "npx playwright test --project=stage2",
+    "test:auth": "npx playwright test --project=auth-setup",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "report": "npx playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlieJamesGwapo/qado-automation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CharlieJamesGwapo/qado-automation/issues"
+  },
+  "homepage": "https://github.com/CharlieJamesGwapo/qado-automation#readme",
+  "dependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "@playwright/test": "^1.58.2",
+    "dotenv": "^17.3.1",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0"
+  }
+}
