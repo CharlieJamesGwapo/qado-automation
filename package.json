@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/CharlieJamesGwapo/qado-automation#readme",
   "dependencies": {
-    "@faker-js/faker": "^10.3.0",
+    "@faker-js/faker": "^10.5.0",
     "@playwright/test": "^1.58.2",
     "dotenv": "^17.3.1"
   }
